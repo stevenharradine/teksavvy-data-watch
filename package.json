@@ -1,0 +1,9 @@
+{
+  "name": "TekSavvy-Data-Watch",
+  "description": "reads your data usage from TekSavvy API and will activate hooks to do stuff based usage your current usage (like email you or disable services)",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "urllib": "*"
+  }
+}
