@@ -67,7 +67,7 @@ function downloadData (url) {
 				if (error){
 					console.log(error);
 				} else {
-					if (verbose) console.log("Message sent: " + info.response);
+					console.log("Message sent: " + info.response);
 				}
 			});
 		}
