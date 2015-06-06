@@ -36,10 +36,13 @@ function downloadData (url) {
 			}
 		});
 
+		dataOverage = onPeakDownloadTotal - CONFIG.DATA_CAP;
+
 		// data is Buffer instance
 		console.log ("Data provided in GB and OnPeak/OffPeak\n  " +
 			         "D: " + onPeakDownloadTotal.toFixed(2) + "/" + offPeakDownloadTotal.toFixed(2) + "\n  " +
-			         "U: " + onPeakUploadTotal.toFixed(2)   + "/" + offPeakUploadTotal.toFixed(2));
+			         "U: " + onPeakUploadTotal.toFixed(2)   + "/" + offPeakUploadTotal.toFixed(2) + "\n\n" +
+			         (onPeakDownloadTotal > CONFIG.DATA_CAP ? "** Warning Data limit exceded by " + dataOverage.toFixed(2) + "GB" : ""));
 	});
 }
 
