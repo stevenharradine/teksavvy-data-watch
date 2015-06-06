@@ -66,12 +66,12 @@ function downloadData (url) {
 			console.log ("Used " + onPeakDownloadTotal + "GB of " + CONFIG.DATA_CAP + "GB or " + percentUsedOfDataCap + "%");
 		}
 
-		var mailOptions = {										// setup e-mail data with unicode symbols
-			from: "TekSavvy Data Watch <usage@data.teksavvy>",	// sender address
-			to: "stevenharradine@gmail.com",					// list of receivers
-			subject: subject,									// Subject line
-			text: message,										// plaintext body
-			html: message										// html body
+		var mailOptions = {
+			from: "TekSavvy Data Watch <usage@data.teksavvy>",
+			to: "stevenharradine@gmail.com",
+			subject: subject,
+			text: message,
+			html: message
 		};
 
 		// if lowest threshold for sending mail
