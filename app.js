@@ -16,11 +16,9 @@ function downloadData (url) {
 			throw err; // you need to handle error 
 		}
 
-		var data = JSON.parse(rawData.toString()).value,
-		    functionStop  = false,
-		    nextLink = JSON.parse(rawData.toString())["odata.nextLink"];
+		var functionStop  = false;
 
-		data.reverse().forEach (function (currentDataElement, index, array) {
+		JSON.parse(rawData.toString()).value.reverse().forEach (function (currentDataElement, index, array) {
 			var year          = currentDataElement.Date.split("T")[0].split("-")[0],
 			    month         = currentDataElement.Date.split("T")[0].split("-")[1],
 			    day           = currentDataElement.Date.split("T")[0].split("-")[2],
