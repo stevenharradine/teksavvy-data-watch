@@ -1,4 +1,5 @@
-var API_URL              = "https://api.teksavvy.com/web/Usage/UsageRecords?$skip=40",
+var CONFIG               = require("./config"),
+    API_URL              = "https://api.teksavvy.com/web/Usage/UsageRecords?$skip=40",
     urllib               = require('urllib'),
     onPeakDownloadTotal  = 0,
     onPeakUploadTotal    = 0,
@@ -8,7 +9,7 @@ var API_URL              = "https://api.teksavvy.com/web/Usage/UsageRecords?$ski
 function downloadData (url) {
 	urllib.request(url, {
 		headers: {
-			"TekSavvy-APIKey": "<< YOURKEY >>"
+			"TekSavvy-APIKey": CONFIG.API_KEY
 		}
 	}, function (err, rawData, res) {
 		if (err) {
