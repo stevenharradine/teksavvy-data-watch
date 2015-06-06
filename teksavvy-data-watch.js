@@ -1,4 +1,5 @@
 var CONFIG               = require("./config"),
+    nodemailer           = require("nodemailer"),
     API_URL              = "https://api.teksavvy.com/web/Usage/UsageRecords?$skip=40",
     urllib               = require('urllib'),
     onPeakDownloadTotal  = 0,
@@ -41,8 +42,35 @@ function downloadData (url) {
 		// data is Buffer instance
 		console.log ("Data provided in GB and OnPeak/OffPeak\n  " +
 			         "D: " + onPeakDownloadTotal.toFixed(2) + "/" + offPeakDownloadTotal.toFixed(2) + "\n  " +
-			         "U: " + onPeakUploadTotal.toFixed(2)   + "/" + offPeakUploadTotal.toFixed(2) + "\n\n" +
-			         (onPeakDownloadTotal > CONFIG.DATA_CAP ? "** Warning Data limit exceded by " + dataOverage.toFixed(2) + "GB" : ""));
+			         "U: " + onPeakUploadTotal.toFixed(2)   + "/" + offPeakUploadTotal.toFixed(2));
+
+		if (onPeakDownloadTotal > CONFIG.DATA_CAP) {
+			var message = "** Warning Data limit exceded by " + dataOverage.toFixed(2) + "GB",
+		        transporter  = nodemailer.createTransport({
+		    	service: CONFIG.EMAIL_PROVIDER,
+		    	auth: {
+		    		user: CONFIG.EMAIL_USER,
+		    		pass: CONFIG.EMAIL_PASSWORD
+		    	}
+		    });
+
+			var mailOptions = { 							// setup e-mail data with unicode symbols
+				from: "TekSavvy Data Watch ✔ <usage@data.teksavvy>",	// sender address
+				to: "stevenharradine@gmail.com",							// list of receivers
+				subject: "ALERT you have exceeded your data usage",		// Subject line
+				text: message, 							// plaintext body
+				html: message 								// html body
+			};
+
+			// send mail with defined transport object
+			transporter.sendMail(mailOptions, function(error, info){
+				if (error){
+					console.log(error);
+				} else {
+					if (verbose) console.log("Message sent: " + info.response);
+				}
+			});
+		}
 	});
 }
 
