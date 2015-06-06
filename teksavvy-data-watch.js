@@ -13,11 +13,20 @@ function downloadData (url) {
 			"TekSavvy-APIKey": CONFIG.API_KEY
 		}
 	}, function (err, rawData, res) {
-		if (err) {
-			throw err; // you need to handle error 
-		}
+		var functionStop = false,
+		    subject      = "",
+		    message      = "";
+		    transporter  = nodemailer.createTransport({
+		    	service: CONFIG.EMAIL_PROVIDER,
+		    	auth: {
+		    		user: CONFIG.EMAIL_USER,
+		    		pass: CONFIG.EMAIL_PASSWORD
+		    	}
+		    });
 
-		var functionStop  = false;
+		if (err) {
+			throw err;
+		}
 
 		JSON.parse(rawData.toString()).value.reverse().forEach (function (currentDataElement, index, array) {
 			var year          = currentDataElement.Date.split("T")[0].split("-")[0],
@@ -37,31 +46,36 @@ function downloadData (url) {
 			}
 		});
 
-		dataOverage = onPeakDownloadTotal - CONFIG.DATA_CAP;
+		var dataOverage          = onPeakDownloadTotal - CONFIG.DATA_CAP,
+		    percentUsedOfDataCap = Math.round ((onPeakDownloadTotal / CONFIG.DATA_CAP) * 100);
 
-		// data is Buffer instance
-		console.log ("Data provided in GB and OnPeak/OffPeak\n  " +
-			         "D: " + onPeakDownloadTotal.toFixed(2) + "/" + offPeakDownloadTotal.toFixed(2) + "\n  " +
-			         "U: " + onPeakUploadTotal.toFixed(2)   + "/" + offPeakUploadTotal.toFixed(2));
+		console.log ("     OnPeak/OffPeak (GB)\n  " +
+		             "D: " + onPeakDownloadTotal.toFixed(2) + "/" + offPeakDownloadTotal.toFixed(2) + "\n  " +
+		             "U: " + onPeakUploadTotal.toFixed(2)   + "/" + offPeakUploadTotal.toFixed(2));
 
 		if (onPeakDownloadTotal > CONFIG.DATA_CAP) {
-			var message = "** Warning Data limit exceded by " + dataOverage.toFixed(2) + "GB",
-		        transporter  = nodemailer.createTransport({
-		    	service: CONFIG.EMAIL_PROVIDER,
-		    	auth: {
-		    		user: CONFIG.EMAIL_USER,
-		    		pass: CONFIG.EMAIL_PASSWORD
-		    	}
-		    });
+			subject = "!!! ALERT !!!",
+			message = "Data limit exceded by " + dataOverage.toFixed(2) + "GB";
+		} else if (onPeakDownloadTotal >= CONFIG.DATA_CAP * 0.80) {
+			subject = "*** Warning ***",
+			message = "You are at 80% of your data limit " + dataOverage.toFixed(2) + "GB";
+		} else if (onPeakDownloadTotal >= CONFIG.DATA_CAP * 0.50) {
+			subject = "Data usage notice",
+			message = "You are at 50% of your data limit " + dataOverage.toFixed(2) + "GB";
+		} else {
+			console.log ("Used " + onPeakDownloadTotal + "GB of " + CONFIG.DATA_CAP + "GB or " + percentUsedOfDataCap + "%");
+		}
 
-			var mailOptions = { 							// setup e-mail data with unicode symbols
-				from: "TekSavvy Data Watch ✔ <usage@data.teksavvy>",	// sender address
-				to: "stevenharradine@gmail.com",							// list of receivers
-				subject: "ALERT you have exceeded your data usage",		// Subject line
-				text: message, 							// plaintext body
-				html: message 								// html body
-			};
+		var mailOptions = {										// setup e-mail data with unicode symbols
+			from: "TekSavvy Data Watch <usage@data.teksavvy>",	// sender address
+			to: "stevenharradine@gmail.com",					// list of receivers
+			subject: subject,									// Subject line
+			text: message,										// plaintext body
+			html: message										// html body
+		};
 
+		// if lowest threshold for sending mail
+		if (onPeakDownloadTotal >= CONFIG.DATA_CAP * 0.50) {
 			// send mail with defined transport object
 			transporter.sendMail(mailOptions, function(error, info){
 				if (error){
