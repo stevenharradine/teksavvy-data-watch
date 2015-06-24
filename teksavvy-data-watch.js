@@ -62,9 +62,9 @@ function downloadData (url) {
 		} else if (onPeakDownloadTotal >= CONFIG.DATA_CAP * 0.50) {
 			subject = "Data usage notice",
 			message = "You are at 50% of your data limit " + dataOverage.toFixed(2) + "GB";
-		} else {
-			console.log ("Used " + onPeakDownloadTotal + "GB of " + CONFIG.DATA_CAP + "GB or " + percentUsedOfDataCap + "%");
 		}
+		
+		console.log ("Used " + onPeakDownloadTotal + "GB of " + CONFIG.DATA_CAP + "GB or " + percentUsedOfDataCap + "%");
 
 		var mailOptions = {
 			from: "TekSavvy Data Watch <usage@data.teksavvy>",
