@@ -47,7 +47,8 @@ function downloadData (url) {
 		});
 
 		var dataOverage          = onPeakDownloadTotal - CONFIG.DATA_CAP,
-		    percentUsedOfDataCap = Math.round ((onPeakDownloadTotal / CONFIG.DATA_CAP) * 100);
+		    percentUsedOfDataCap = Math.round ((onPeakDownloadTotal / CONFIG.DATA_CAP) * 100),
+		    actualUsage          = (onPeakDownloadTotal + offPeakDownloadTotal + onPeakUploadTotal + offPeakUploadTotal);
 
 		console.log ("     OnPeak/OffPeak (GB)\n  " +
 		             "D: " + onPeakDownloadTotal.toFixed(2) + "/" + offPeakDownloadTotal.toFixed(2) + "\n  " +
@@ -66,7 +67,7 @@ function downloadData (url) {
 		
 		console.log ("Used " + onPeakDownloadTotal + "GB* of " + CONFIG.DATA_CAP + "GB or " + percentUsedOfDataCap + "%");
 		console.log ("");
-		console.log ("* Billable usage, actual usage " + (onPeakDownloadTotal + offPeakDownloadTotal + onPeakUploadTotal + offPeakUploadTotal).toFixed(2) + "GB" );
+		console.log ("* Billable usage, actual usage " + actualUsage.toFixed(2) + "GB" );
 
 		var mailOptions = {
 			from: "TekSavvy Data Watch <usage@data.teksavvy>",
