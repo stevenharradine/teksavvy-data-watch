@@ -64,7 +64,9 @@ function downloadData (url) {
 			message = "You are at 50% of your data limit " + dataOverage.toFixed(2) + "GB";
 		}
 		
-		console.log ("Used " + onPeakDownloadTotal + "GB of " + CONFIG.DATA_CAP + "GB or " + percentUsedOfDataCap + "%");
+		console.log ("Used " + onPeakDownloadTotal + "GB* of " + CONFIG.DATA_CAP + "GB or " + percentUsedOfDataCap + "%");
+		console.log ("");
+		console.log ("* Billable usage, actual usage " + (onPeakDownloadTotal + offPeakDownloadTotal + onPeakUploadTotal + offPeakUploadTotal).toFixed(2) + "GB" );
 
 		var mailOptions = {
 			from: "TekSavvy Data Watch <usage@data.teksavvy>",
